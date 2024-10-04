@@ -1,0 +1,165 @@
+import 'dart:io';
+
+import 'package:anothertodo/blocs/task_bloc/task_bloc.dart';
+import 'package:anothertodo/screens/add_task_screen.dart';
+import 'package:anothertodo/screens/test_screen.dart';
+import 'package:anothertodo/widgets/cupertino_home_widget.dart';
+import 'package:anothertodo/widgets/tasks_list_view.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  Widget body(BuildContext context, TaskState state) {
+    if (state.status == TaskStatus.initial || state.tasks.isEmpty) {
+      return const CupertinoHomeWidget();
+    } else if (state.status == TaskStatus.loading) {
+      return const Center(
+        child: CupertinoActivityIndicator(),
+      );
+    } else if (state.status == TaskStatus.success) {
+      return const TasksListWidget();
+    } else {
+      return const Center(
+        child: Text("Ohh ohh, something went wrong"),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: CupertinoNavigationBar(
+        backgroundColor: Colors.transparent,
+        leading: Container(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Welcome John",
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(fontWeight: FontWeight.w600, fontSize: 20),
+            )),
+        trailing: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(CupertinoIcons.calendar),
+            Gap(8),
+            Icon(CupertinoIcons.bell),
+          ],
+        ),
+        border: Border.all(color: Colors.transparent),
+      ),
+      body: BlocBuilder<TaskBloc, TaskState>(
+        builder: (context, state) {
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    Text(
+                      "Your Tasks",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(fontWeight: FontWeight.w600),
+                    )
+                  ],
+                ),
+              ),
+              Expanded(child: body(context, state))
+            ],
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context).push(
+            CupertinoPageRoute(builder: (context) => const AddTaskScreen())),
+        shape: Platform.isAndroid ? null : const CircleBorder(),
+        elevation: 4,
+        child: const Icon(CupertinoIcons.add),
+      ),
+      bottomNavigationBar: const BottomAppBar(
+          padding: EdgeInsets.only(),
+          color: Colors.white,
+          elevation: 4,
+          shadowColor: Colors.black,
+          surfaceTintColor: Colors.white,
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _BottomBarItem(
+                title: "Home",
+                isActive: true,
+                icon: CupertinoIcons.home,
+              ),
+              _BottomBarItem(
+                title: "Search",
+                icon: CupertinoIcons.search,
+              ),
+              _BottomBarItem(
+                title: "Profile",
+                icon: CupertinoIcons.person_circle,
+              )
+            ],
+          )),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //         icon: Icon(CupertinoIcons.house), label: "Home"),
+      //     BottomNavigationBarItem(
+      //         icon: Icon(CupertinoIcons.house), label: "Home"),
+      //     BottomNavigationBarItem(
+      //         icon: Icon(CupertinoIcons.house), label: "Home"),
+      //   ],
+      // ),
+    );
+  }
+}
+
+class _BottomBarItem extends StatelessWidget {
+  final String title;
+  final bool isActive;
+  final IconData icon;
+  const _BottomBarItem(
+      {super.key,
+      required this.title,
+      this.isActive = false,
+      required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      decoration: BoxDecoration(
+          color: isActive
+              ? Theme.of(context).colorScheme.surfaceTint.withOpacity(0.1)
+              : Colors.transparent,
+          borderRadius: const BorderRadius.all(Radius.circular(12))),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: 20,
+            color: isActive ? Theme.of(context).colorScheme.surfaceTint : null,
+          ),
+          const Gap(8),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: isActive
+                      ? Theme.of(context).colorScheme.surfaceTint
+                      : null,
+                ),
+          )
+        ],
+      ),
+    );
+  }
+}
