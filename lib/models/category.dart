@@ -28,7 +28,9 @@ class Category extends Equatable {
 
   static Category fromJson(Map<String, dynamic> json) {
     return Category(
-        id: Uuid.unparse(Uuid.parse(json["id"])), name: json["name"]);
+      id: Uuid.unparse(Uuid.parse(json["id"])),
+      name: json["name"],
+    );
   }
 
   Map<String, dynamic> toJson() {
