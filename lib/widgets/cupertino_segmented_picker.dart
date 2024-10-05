@@ -1,7 +1,6 @@
 import 'package:anothertodo/common/enum_priority.dart';
 import 'package:anothertodo/common/extensions/string_extensions.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class CupertionSegementedPicker extends StatefulWidget {
   final Function(Priority) setPriority;

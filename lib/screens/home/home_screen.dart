@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:anothertodo/blocs/task_bloc/task_bloc.dart';
-import 'package:anothertodo/screens/add_task_screen.dart';
-import 'package:anothertodo/widgets/cupertino_home_widget.dart';
+import 'package:anothertodo/screens/add_task_screen/add_task_screen.dart';
+import 'package:anothertodo/screens/home/widgets/ios/cupertino_home_widget.dart';
 import 'package:anothertodo/widgets/tasks_list_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
