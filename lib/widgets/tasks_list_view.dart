@@ -21,7 +21,7 @@ class TasksListWidget extends StatelessWidget {
                   CupertinoContextMenuAction(
                     isDefaultAction: true,
                     onPressed: () {
-                      context.read<TaskBloc>().add(CompleteTask(id: task.id));
+                      context.read<TaskBloc>().add(TaskCompleted(id: task.id));
                       Navigator.of(context).pop();
                     },
                     child: Row(
@@ -55,7 +55,7 @@ class TasksListWidget extends StatelessWidget {
                   CupertinoContextMenuAction(
                     isDestructiveAction: true,
                     onPressed: () {
-                      context.read<TaskBloc>().add(RemoveTask(id: task.id));
+                      context.read<TaskBloc>().add(TaskRemoved(id: task.id));
                       Navigator.of(context).pop();
                     },
                     child: const Row(

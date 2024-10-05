@@ -50,7 +50,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         child: CupertinoButton.filled(
             child: const Text("Save Task"),
             onPressed: () {
-              context.read<TaskBloc>().add(AddTask(
+              context.read<TaskBloc>().add(TaskAdded(
                   task: Task(
                       id: const Uuid().toString(),
                       title: titleController.text,

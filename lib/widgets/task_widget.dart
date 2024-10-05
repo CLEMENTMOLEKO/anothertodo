@@ -41,7 +41,7 @@ class TaskWidget extends StatelessWidget {
               alignment: Alignment.topLeft,
               color: CupertinoColors.activeBlue,
               onPressed: () {
-                context.read<TaskBloc>().add(CompleteTask(id: task.id));
+                context.read<TaskBloc>().add(TaskCompleted(id: task.id));
               },
               isSelected: task.isComplete, //TODO: task.isComplete
               icon: const Icon(CupertinoIcons.circle),

@@ -119,7 +119,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
                               isDense: true,
                               fillColor: Colors.grey.withOpacity(0.2)),
                           onFieldSubmitted: (value) {
-                            context.read<TaskBloc>().add(AddTask(
+                            context.read<TaskBloc>().add(TaskAdded(
                                 task: Task(
                                     id: const Uuid().v4().toString(),
                                     title: widget.titleController.text,

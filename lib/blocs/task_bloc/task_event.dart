@@ -10,36 +10,36 @@ class Initial extends TaskEvent {
   List<Object?> get props => [];
 }
 
-class AddTask extends TaskEvent {
+class TaskAdded extends TaskEvent {
   final Task task;
-  const AddTask({required this.task});
+  const TaskAdded({required this.task});
 
   @override
   List<Object?> get props => [task];
 }
 
-class UpdateTask extends TaskEvent {
+class TaskUpdated extends TaskEvent {
   final Task task;
 
-  const UpdateTask({required this.task});
+  const TaskUpdated({required this.task});
 
   @override
   List<Object?> get props => [task];
 }
 
-class RemoveTask extends TaskEvent {
+class TaskRemoved extends TaskEvent {
   final String id;
 
-  const RemoveTask({required this.id});
+  const TaskRemoved({required this.id});
 
   @override
   List<Object?> get props => [id];
 }
 
-class CompleteTask extends TaskEvent {
+class TaskCompleted extends TaskEvent {
   final String id;
 
-  const CompleteTask({required this.id});
+  const TaskCompleted({required this.id});
 
   @override
   // TODO: implement props

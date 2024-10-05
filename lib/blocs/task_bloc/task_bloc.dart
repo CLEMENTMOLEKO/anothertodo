@@ -10,10 +10,10 @@ part 'task_state.dart';
 class TaskBloc extends HydratedBloc<TaskEvent, TaskState> {
   TaskBloc() : super(const TaskState(status: TaskStatus.initial)) {
     on<Initial>(initialTask);
-    on<AddTask>(onAddTask);
-    on<UpdateTask>(updateTask);
-    on<RemoveTask>(removeTask);
-    on<CompleteTask>(completeTask);
+    on<TaskAdded>(onAddTask);
+    on<TaskUpdated>(updateTask);
+    on<TaskRemoved>(removeTask);
+    on<TaskCompleted>(completeTask);
   }
 
   void initialTask(Initial event, Emitter<TaskState> emit) {
@@ -21,7 +21,8 @@ class TaskBloc extends HydratedBloc<TaskEvent, TaskState> {
     emit(state.copyWith(tasks: state.tasks, status: TaskStatus.success));
   }
 
-  void onAddTask(AddTask event, Emitter<TaskState> emit) {
+  /// TODO: Introduce task service in packages to encapsulate the task logic. for all these methods.
+  void onAddTask(TaskAdded event, Emitter<TaskState> emit) {
     emit(state.copyWith(status: TaskStatus.loading));
     try {
       List<Task> temp = <Task>[];
@@ -34,7 +35,7 @@ class TaskBloc extends HydratedBloc<TaskEvent, TaskState> {
     }
   }
 
-  void updateTask(UpdateTask event, Emitter<TaskState> emit) {
+  void updateTask(TaskUpdated event, Emitter<TaskState> emit) {
     emit(state.copyWith(status: TaskStatus.loading));
     try {
       List<Task> temp = <Task>[];
@@ -46,7 +47,7 @@ class TaskBloc extends HydratedBloc<TaskEvent, TaskState> {
     }
   }
 
-  void removeTask(RemoveTask event, Emitter<TaskState> emit) {
+  void removeTask(TaskRemoved event, Emitter<TaskState> emit) {
     emit(state.copyWith(status: TaskStatus.loading));
     try {
       List<Task> temp = <Task>[];
@@ -58,7 +59,7 @@ class TaskBloc extends HydratedBloc<TaskEvent, TaskState> {
     }
   }
 
-  void completeTask(CompleteTask event, Emitter<TaskState> emit) {
+  void completeTask(TaskCompleted event, Emitter<TaskState> emit) {
     emit(state.copyWith(status: TaskStatus.loading));
     try {
       List<Task> temp = <Task>[];
