@@ -13,7 +13,7 @@ class CupertionSegementedPicker extends StatefulWidget {
 class _CupertionSegementedPickerState extends State<CupertionSegementedPicker> {
   Priority _selectedSegment = Priority.low;
 
-  Map<Priority, Color> skyColors = <Priority, Color>{
+  Map<Priority, Color> priorityColors = <Priority, Color>{
     Priority.critical: Colors.red,
     Priority.high: Colors.orange[800]!,
     Priority.medium: Colors.lime[300]!,
@@ -26,12 +26,10 @@ class _CupertionSegementedPickerState extends State<CupertionSegementedPicker> {
       children: [
         Expanded(
           child: CupertinoSegmentedControl<Priority>(
-            selectedColor: skyColors[_selectedSegment],
-            borderColor: skyColors[_selectedSegment],
+            selectedColor: priorityColors[_selectedSegment],
+            borderColor: priorityColors[_selectedSegment],
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            // This represents a currently selected segmented control.
             groupValue: _selectedSegment,
-            // Callback that sets the selected segmented control.
             onValueChanged: (Priority value) {
               setState(() {
                 _selectedSegment = value;
