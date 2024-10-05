@@ -1,9 +1,11 @@
 import 'package:anothertodo/common/enum_priority.dart';
+import 'package:anothertodo/common/extensions/string_extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CupertionSegementedPicker extends StatefulWidget {
-  const CupertionSegementedPicker({super.key});
+  final Function(Priority) setPriority;
+  const CupertionSegementedPicker({super.key, required this.setPriority});
 
   @override
   State<CupertionSegementedPicker> createState() =>
@@ -33,26 +35,15 @@ class _CupertionSegementedPickerState extends State<CupertionSegementedPicker> {
             onValueChanged: (Priority value) {
               setState(() {
                 _selectedSegment = value;
-                //widget.setPriority(value);
+                widget.setPriority(value);
               });
             },
-            children: const <Priority, Widget>{
-              Priority.critical: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Text('Critical'),
-              ),
-              Priority.high: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Text('High'),
-              ),
-              Priority.medium: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Text('Medium'),
-              ),
-              Priority.low: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Text('Low'),
-              ),
+            children: {
+              for (var priority in Priority.values)
+                priority: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(priority.name.capitalize()),
+                ),
             },
           ),
         ),

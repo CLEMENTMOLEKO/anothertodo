@@ -8,6 +8,8 @@ import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
+import '../widgets/cupertino_segmented_picker.dart';
+
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
 
@@ -70,11 +72,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 class TaskForm extends StatefulWidget {
   final TextEditingController titleController;
   final TextEditingController descriptionController;
-  TextEditingController startDateController;
-  TextEditingController endDateController;
+  final TextEditingController startDateController;
+  final TextEditingController endDateController;
   final Function(Priority) setPriority;
 
-  TaskForm({
+  const TaskForm({
     super.key,
     required this.titleController,
     required this.descriptionController,
@@ -117,7 +119,6 @@ class _TaskFormState extends State<TaskForm> {
 
   @override
   Widget build(BuildContext context) {
-    // Use a SafeArea widget to avoid system overlaps.
     return SafeArea(
       child: Material(
         child: ListView(
@@ -130,6 +131,9 @@ class _TaskFormState extends State<TaskForm> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Gap(8),
+                      CupertionSegementedPicker(
+                        setPriority: (priority) => _selectedSegment = priority,
+                      ),
                       const Gap(16),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
