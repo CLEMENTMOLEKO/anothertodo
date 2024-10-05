@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:anothertodo/blocs/task_bloc/task_bloc.dart';
 import 'package:anothertodo/screens/add_task_screen.dart';
-import 'package:anothertodo/screens/test_screen.dart';
 import 'package:anothertodo/widgets/cupertino_home_widget.dart';
 import 'package:anothertodo/widgets/tasks_list_view.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,7 +12,7 @@ import 'package:gap/gap.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  Widget body(BuildContext context, TaskState state) {
+  Widget getBody(BuildContext context, TaskState state) {
     if (state.status == TaskStatus.initial || state.tasks.isEmpty) {
       return const CupertinoHomeWidget();
     } else if (state.status == TaskStatus.loading) {
@@ -37,7 +36,7 @@ class HomeScreen extends StatelessWidget {
         leading: Container(
             alignment: Alignment.centerLeft,
             child: Text(
-              "Welcome John",
+              "Welcome Clement", //TODO: get this from the user once onboarding is done.
               style: Theme.of(context)
                   .textTheme
                   .headlineMedium
@@ -71,7 +70,7 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Expanded(child: body(context, state))
+              Expanded(child: getBody(context, state))
             ],
           );
         },
@@ -82,83 +81,6 @@ class HomeScreen extends StatelessWidget {
         shape: Platform.isAndroid ? null : const CircleBorder(),
         elevation: 4,
         child: const Icon(CupertinoIcons.add),
-      ),
-      bottomNavigationBar: const BottomAppBar(
-          padding: EdgeInsets.only(),
-          color: Colors.white,
-          elevation: 4,
-          shadowColor: Colors.black,
-          surfaceTintColor: Colors.white,
-          height: 60,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _BottomBarItem(
-                title: "Home",
-                isActive: true,
-                icon: CupertinoIcons.home,
-              ),
-              _BottomBarItem(
-                title: "Search",
-                icon: CupertinoIcons.search,
-              ),
-              _BottomBarItem(
-                title: "Profile",
-                icon: CupertinoIcons.person_circle,
-              )
-            ],
-          )),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   items: const [
-      //     BottomNavigationBarItem(
-      //         icon: Icon(CupertinoIcons.house), label: "Home"),
-      //     BottomNavigationBarItem(
-      //         icon: Icon(CupertinoIcons.house), label: "Home"),
-      //     BottomNavigationBarItem(
-      //         icon: Icon(CupertinoIcons.house), label: "Home"),
-      //   ],
-      // ),
-    );
-  }
-}
-
-class _BottomBarItem extends StatelessWidget {
-  final String title;
-  final bool isActive;
-  final IconData icon;
-  const _BottomBarItem(
-      {super.key,
-      required this.title,
-      this.isActive = false,
-      required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(
-          color: isActive
-              ? Theme.of(context).colorScheme.surfaceTint.withOpacity(0.1)
-              : Colors.transparent,
-          borderRadius: const BorderRadius.all(Radius.circular(12))),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            size: 20,
-            color: isActive ? Theme.of(context).colorScheme.surfaceTint : null,
-          ),
-          const Gap(8),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: isActive
-                      ? Theme.of(context).colorScheme.surfaceTint
-                      : null,
-                ),
-          )
-        ],
       ),
     );
   }
