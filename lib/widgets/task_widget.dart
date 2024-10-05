@@ -137,32 +137,19 @@ class _TaskStateWiget extends StatelessWidget {
   final Priority taskPriority;
   const _TaskStateWiget({super.key, required this.taskPriority});
 
-  Color taskStateColor() {
-    switch (taskPriority) {
-      case Priority.critical:
-        return Colors.red;
-      case Priority.high:
-        return Colors.orange[800]!;
-      case Priority.medium:
-        return Colors.lime[300]!;
-      case Priority.low:
-        return Colors.green;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-          color: taskStateColor().withOpacity(0.1),
+          color: taskPriority.color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(4)),
       child: Text(
         taskPriority.name,
         style: Theme.of(context)
             .textTheme
             .bodySmall
-            ?.copyWith(color: taskStateColor()),
+            ?.copyWith(color: taskPriority.color),
       ),
     );
   }

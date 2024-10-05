@@ -15,21 +15,14 @@ class CupertionSegementedPicker extends StatefulWidget {
 class _CupertionSegementedPickerState extends State<CupertionSegementedPicker> {
   Priority _selectedSegment = Priority.low;
 
-  Map<Priority, Color> priorityColors = <Priority, Color>{
-    Priority.critical: Colors.red,
-    Priority.high: Colors.orange[800]!,
-    Priority.medium: Colors.lime[300]!,
-    Priority.low: Colors.green
-  };
-
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
           child: CupertinoSegmentedControl<Priority>(
-            selectedColor: priorityColors[_selectedSegment],
-            borderColor: priorityColors[_selectedSegment],
+            selectedColor: _selectedSegment.color,
+            borderColor: _selectedSegment.color,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             groupValue: _selectedSegment,
             onValueChanged: (Priority value) {
