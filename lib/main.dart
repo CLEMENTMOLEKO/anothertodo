@@ -12,6 +12,6 @@ void main() async {
         ? HydratedStorage.webStorageDirectory
         : await getApplicationDocumentsDirectory(),
   );
-  Bloc.observer = SimpleBlocObserver();
+  Bloc.observer = AnotherTodoBlocObserver();
   runApp(const AnotherTodo());
 }

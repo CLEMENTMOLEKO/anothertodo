@@ -25,9 +25,10 @@ class TaskState extends Equatable {
   }
 
   factory TaskState.fromJson(Map<String, dynamic> json) {
-    List<Task> taskList = (json["tasks"] as List<dynamic>)
+    List<Task> taskList = (json["tasks"] as List<Map<String, dynamic>>)
         .map((task) => Task.fromJson(task))
         .toList();
+
     return TaskState(
       status: TaskStatus.values
           .firstWhere((element) => element.name == json["status"]),
@@ -37,6 +38,10 @@ class TaskState extends Equatable {
   }
 
   Map<String, dynamic> toJson() {
-    return {"status": status.name, "tasks": tasks, "message": message};
+    return {
+      "status": status.name,
+      "tasks": tasks.map((task) => task.toJson()).toList(),
+      "message": message
+    };
   }
 }

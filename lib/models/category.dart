@@ -22,8 +22,8 @@ class Category extends Equatable {
   /// useful getter to check if [Category] is empty
   bool get isNotEmpty => this != empty;
 
-  Category copyWith({String? name}) {
-    return Category(name: name ?? this.name);
+  Category copyWith({String? name, String? id}) {
+    return Category(name: name ?? this.name, id: id ?? this.id);
   }
 
   static Category fromJson(Map<String, dynamic> json) {

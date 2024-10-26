@@ -24,22 +24,22 @@ class TaskBloc extends HydratedBloc<TaskEvent, TaskState> {
   /// TODO: Introduce task service in packages to encapsulate the task logic. for all these methods.
   void onAddTask(TaskAdded event, Emitter<TaskState> emit) {
     emit(state.copyWith(status: TaskStatus.loading));
-    try {
-      List<Task> temp = <Task>[];
-      Task tempTask = event.task.copyWith(id: const Uuid().v4().toString());
-      temp.addAll(state.tasks);
-      temp.add(tempTask);
-      emit(state.copyWith(status: TaskStatus.success, tasks: temp));
-    } catch (e) {
-      emit(state.copyWith(status: TaskStatus.failure, message: e.toString()));
-    }
+
+    List<Task> temp = <Task>[...state.tasks];
+    Task tempTask = event.task.copyWith(id: const Uuid().v4().toString());
+
+    temp.add(tempTask);
+    emit(state.copyWith(status: TaskStatus.success, tasks: temp));
   }
 
   void updateTask(TaskUpdated event, Emitter<TaskState> emit) {
     emit(state.copyWith(status: TaskStatus.loading));
     try {
-      List<Task> temp = <Task>[];
-      temp.addAll(state.tasks);
+      List<Task> temp = <Task>[...state.tasks];
+      final taskToUpdate = _getTaskById(event.task.id);
+      if (taskToUpdate == null) throw Exception("Task not found");
+
+      temp.remove(taskToUpdate);
       temp.add(event.task);
       emit(state.copyWith(status: TaskStatus.success, tasks: temp));
     } catch (e) {
@@ -50,9 +50,10 @@ class TaskBloc extends HydratedBloc<TaskEvent, TaskState> {
   void removeTask(TaskRemoved event, Emitter<TaskState> emit) {
     emit(state.copyWith(status: TaskStatus.loading));
     try {
-      List<Task> temp = <Task>[];
-      temp.addAll(state.tasks);
-      temp.remove(state.tasks.firstWhere((element) => element.id == event.id));
+      List<Task> temp = <Task>[...state.tasks];
+      final taskToRemove = _getTaskById(event.id);
+      temp.remove(taskToRemove);
+
       emit(state.copyWith(status: TaskStatus.success, tasks: temp));
     } catch (e) {
       emit(state.copyWith(status: TaskStatus.failure, message: e.toString()));
@@ -62,13 +63,21 @@ class TaskBloc extends HydratedBloc<TaskEvent, TaskState> {
   void completeTask(TaskCompleted event, Emitter<TaskState> emit) {
     emit(state.copyWith(status: TaskStatus.loading));
     try {
-      List<Task> temp = <Task>[];
-      temp.addAll(state.tasks);
+      List<Task> temp = <Task>[...state.tasks];
+      _getTaskById(event.id);
+
       temp.firstWhere((element) => element.id == event.id).toggleCompletTask();
       emit(state.copyWith(status: TaskStatus.success, tasks: temp));
     } catch (e) {
       emit(state.copyWith(status: TaskStatus.failure, message: e.toString()));
     }
+  }
+
+  /// throws an exception if the task is not found
+  Task? _getTaskById(String id) {
+    final task = state.tasks.firstWhere((task) => task.id == id);
+    if (task.isEmpty) throw Exception("Task not found");
+    return task;
   }
 
   @override
