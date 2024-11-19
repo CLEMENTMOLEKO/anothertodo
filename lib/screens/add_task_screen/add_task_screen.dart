@@ -4,10 +4,8 @@ import 'package:anothertodo/models/task.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../widgets/cupertino_segmented_picker.dart';
 import 'widgets/add_task_form.dart';
 
 class AddTaskScreen extends StatefulWidget {
@@ -25,15 +23,28 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   Priority taskPriority = Priority.low;
 
   @override
+  void dispose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    startDateController.dispose();
+    endDateController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
+          key: const Key("add_task_screen_navigation_bar"),
           trailing: const CircleAvatar(
             radius: 16,
             backgroundColor: Colors.grey,
           ),
-          middle: const Text("Add Task"),
+          middle: const Text(
+            "Add Task",
+            key: Key("add_task_screen_navigation_bar_text"),
+          ),
           backgroundColor: Colors.transparent,
           border: Border.all(color: Colors.transparent),
         ),
@@ -48,6 +59,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       ),
       bottomNavigationBar: BottomAppBar(
         child: CupertinoButton.filled(
+            key: const Key("add_task_screen_bottom_app_bar_button"),
             child: const Text("Save Task"),
             onPressed: () {
               context.read<TaskBloc>().add(TaskAdded(
