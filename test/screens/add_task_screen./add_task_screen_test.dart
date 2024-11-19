@@ -1,5 +1,4 @@
 import 'package:anothertodo/blocs/task_bloc/task_bloc.dart';
-import 'package:anothertodo/models/task.dart';
 import 'package:anothertodo/screens/add_task_screen/add_task_screen.dart';
 import 'package:anothertodo/screens/add_task_screen/widgets/add_task_form.dart';
 import 'package:bloc_test/bloc_test.dart';
@@ -15,11 +14,16 @@ void main() {
 
   setUp(() {
     mockTaskBloc = MockTaskBloc();
+    when(() => mockTaskBloc.state).thenReturn(const TaskState());
+  });
+
+  setUpAll(() {
+    registerFallbackValue(const TaskRemoved(id: "1"));
   });
 
   Future<void> pumpAddTaskScreen(WidgetTester tester) async {
     await tester.pumpWidget(
-      BlocProvider.value(
+      BlocProvider<TaskBloc>.value(
         value: mockTaskBloc,
         child: const MaterialApp(home: AddTaskScreen()),
       ),
@@ -53,6 +57,15 @@ void main() {
         find.byKey(const Key("add_task_screen_bottom_app_bar_button")),
         findsOneWidget,
       );
+    });
+
+    testWidgets("Should call TaskAdded event when filled button is pressed",
+        (tester) async {
+      await pumpAddTaskScreen(tester);
+      await tester
+          .tap(find.byKey(const Key("add_task_screen_bottom_app_bar_button")));
+      await tester.pumpAndSettle();
+      verify(() => mockTaskBloc.add(any(that: isA<TaskAdded>()))).called(1);
     });
   });
 }
