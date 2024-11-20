@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import '../../../blocs/task_bloc/task_bloc.dart';
 import '../../../common/enum_priority.dart';
 import '../../../models/task.dart';
+import '../../../widgets/another_text_form_field.dart';
 import '../../../widgets/cupertino_segmented_picker.dart';
 
 class AddTaskForm extends StatefulWidget {
@@ -35,7 +36,8 @@ class _AddTaskFormState extends State<AddTaskForm> {
 
   /// This function displays a CupertinoModalPopup using [showCupertinoModalPopup] with a reasonable fixed height
   /// which hosts [CupertinoDatePicker].
-  void _showDialog(Widget child) {
+  /// [onDateTimeChanged] is a callback function that is called when the user changes the date on the hosted [CupertinoDatePicker].
+  void _showDatePickerDialog(Function(DateTime) onDateTimeChanged) {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => Container(
@@ -51,7 +53,11 @@ class _AddTaskFormState extends State<AddTaskForm> {
         // Use a SafeArea widget to avoid system overlaps.
         child: SafeArea(
           top: false,
-          child: child,
+          child: CupertinoDatePicker(
+            initialDateTime: DateTime.now(),
+            use24hFormat: true,
+            onDateTimeChanged: onDateTimeChanged,
+          ),
         ),
       ),
     );
@@ -75,127 +81,58 @@ class _AddTaskFormState extends State<AddTaskForm> {
                         setPriority: (priority) => _selectedSegment = priority,
                       ),
                       const Gap(16),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Title",
-                          style: Theme.of(context).textTheme.labelLarge,
-                        ),
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: TextFormField(
-                          controller: widget.titleController,
-                          decoration: InputDecoration(
-                            hintText: "Add Title",
-                            border: InputBorder.none,
-                            filled: true,
-                            prefixIcon:
-                                const Icon(CupertinoIcons.doc_plaintext),
-                            isDense: true,
-                            fillColor: Colors.grey.withOpacity(0.2),
-                          ),
-                        ),
+                      AnotherTextFormField(
+                        outsideLabelText: "Title",
+                        controller: widget.titleController,
+                        hintText: "Add Title",
+                        prefixIcon: CupertinoIcons.doc_plaintext,
                       ),
                       const Gap(16),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Description",
-                          style: Theme.of(context).textTheme.labelLarge,
-                        ),
+                      AnotherTextFormField(
+                        outsideLabelText: "Description",
+                        controller: widget.descriptionController,
+                        hintText: "Add Description",
+                        prefixIcon: CupertinoIcons.paragraph,
+                        onFieldSubmitted: (value) {
+                          context.read<TaskBloc>().add(TaskAdded(
+                              task: Task(
+                                  id: const Uuid().v4().toString(),
+                                  title: widget.titleController.text,
+                                  description:
+                                      widget.descriptionController.text,
+                                  startDate: DateTime.parse(
+                                      widget.startDateController.text),
+                                  endDate: DateTime.parse(
+                                      widget.endDateController.text),
+                                  priority: _selectedSegment)));
+                        },
                       ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: TextFormField(
-                          controller: widget.descriptionController,
-                          maxLines: 6,
-                          keyboardType: TextInputType.multiline,
-                          decoration: InputDecoration(
-                              hintText: "Add Description",
-                              border: InputBorder.none,
-                              filled: true,
-                              prefixIcon: const Icon(CupertinoIcons.paragraph),
-                              isDense: true,
-                              fillColor: Colors.grey.withOpacity(0.2)),
-                          onFieldSubmitted: (value) {
-                            context.read<TaskBloc>().add(TaskAdded(
-                                task: Task(
-                                    id: const Uuid().v4().toString(),
-                                    title: widget.titleController.text,
-                                    description:
-                                        widget.descriptionController.text,
-                                    startDate: DateTime.parse(
-                                        widget.startDateController.text),
-                                    endDate: DateTime.parse(
-                                        widget.endDateController.text),
-                                    priority: _selectedSegment)));
+                      const Gap(16),
+                      AnotherTextFormField(
+                        outsideLabelText: "Start Date",
+                        controller: widget.startDateController,
+                        hintText: DateTime.now().toIso8601String(),
+                        prefixIcon: Icons.calendar_month,
+                        readOnly: true,
+                        onTap: () => _showDatePickerDialog(
+                          (DateTime newTime) {
+                            widget.startDateController.text =
+                                newTime.toIso8601String();
                           },
                         ),
                       ),
                       const Gap(16),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Start Date",
-                          style: Theme.of(context).textTheme.labelLarge,
-                        ),
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: TextFormField(
-                          controller: widget.startDateController,
-                          readOnly: true,
-                          onTap: () => _showDialog(
-                            CupertinoDatePicker(
-                              initialDateTime: DateTime.now(),
-                              use24hFormat: true,
-                              // This is called when the user changes the time.
-                              onDateTimeChanged: (DateTime newTime) {
-                                widget.startDateController.text =
-                                    newTime.toIso8601String();
-                              },
-                            ),
-                          ),
-                          decoration: InputDecoration(
-                              hintText: DateTime.now().toIso8601String(),
-                              border: InputBorder.none,
-                              filled: true,
-                              prefixIcon: const Icon(Icons.calendar_month),
-                              isDense: true,
-                              fillColor: Colors.grey.withOpacity(0.2)),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "End Date",
-                          style: Theme.of(context).textTheme.labelLarge,
-                        ),
-                      ),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: TextFormField(
-                          controller: widget.endDateController,
-                          readOnly: true,
-                          onTap: () => _showDialog(
-                            CupertinoDatePicker(
-                              initialDateTime: DateTime.now(),
-                              use24hFormat: true,
-                              // This is called when the user changes the time.
-                              onDateTimeChanged: (DateTime newTime) {
-                                widget.endDateController.text =
-                                    newTime.toIso8601String();
-                              },
-                            ),
-                          ),
-                          decoration: InputDecoration(
-                              hintText: DateTime.now().toIso8601String(),
-                              border: InputBorder.none,
-                              filled: true,
-                              prefixIcon: const Icon(Icons.calendar_month),
-                              isDense: true,
-                              fillColor: Colors.grey.withOpacity(0.2)),
+                      AnotherTextFormField(
+                        outsideLabelText: "End Date",
+                        controller: widget.endDateController,
+                        hintText: DateTime.now().toIso8601String(),
+                        prefixIcon: Icons.calendar_month,
+                        readOnly: true,
+                        onTap: () => _showDatePickerDialog(
+                          (DateTime newTime) {
+                            widget.endDateController.text =
+                                newTime.toIso8601String();
+                          },
                         ),
                       ),
                     ],
