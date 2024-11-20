@@ -49,31 +49,37 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           border: Border.all(color: Colors.transparent),
         ),
         child: SafeArea(
-            child: AddTaskForm(
-          titleController: titleController,
-          descriptionController: descriptionController,
-          startDateController: startDateController,
-          endDateController: endDateController,
-          setPriority: (priority) => taskPriority = priority,
-        )),
+          child: AddTaskForm(
+            titleController: titleController,
+            descriptionController: descriptionController,
+            startDateController: startDateController,
+            endDateController: endDateController,
+            setPriority: (priority) => taskPriority = priority,
+          ),
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
         child: CupertinoButton.filled(
             key: const Key("add_task_screen_bottom_app_bar_button"),
             child: const Text("Save Task"),
             onPressed: () {
-              context.read<TaskBloc>().add(TaskAdded(
-                  task: Task(
-                      id: const Uuid().toString(),
-                      title: titleController.text,
-                      description: descriptionController.text,
-                      startDate: DateTime.parse(startDateController.text.isEmpty
-                          ? DateTime.now().toIso8601String()
-                          : startDateController.text),
-                      endDate: DateTime.parse(endDateController.text.isEmpty
-                          ? DateTime.now().toIso8601String()
-                          : endDateController.text),
-                      priority: taskPriority)));
+              context.read<TaskBloc>().add(
+                    TaskAdded(
+                      task: Task(
+                        id: const Uuid().toString(),
+                        title: titleController.text,
+                        description: descriptionController.text,
+                        startDate: DateTime.parse(
+                            startDateController.text.isEmpty
+                                ? DateTime.now().toIso8601String()
+                                : startDateController.text),
+                        endDate: DateTime.parse(endDateController.text.isEmpty
+                            ? DateTime.now().toIso8601String()
+                            : endDateController.text),
+                        priority: taskPriority,
+                      ),
+                    ),
+                  );
               Navigator.of(context).pop();
             }),
       ),
