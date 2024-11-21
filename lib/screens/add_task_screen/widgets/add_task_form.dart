@@ -78,10 +78,12 @@ class _AddTaskFormState extends State<AddTaskForm> {
                     children: [
                       const Gap(8),
                       CupertionSegementedPicker(
+                        key: const Key("add_task_form_priority_picker"),
                         setPriority: (priority) => _selectedSegment = priority,
                       ),
                       const Gap(16),
                       AnotherTextFormField(
+                        key: const Key("add_task_form_title_field"),
                         outsideLabelText: "Title",
                         controller: widget.titleController,
                         hintText: "Add Title",
@@ -89,6 +91,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       ),
                       const Gap(16),
                       AnotherTextFormField(
+                        key: const Key("add_task_form_description_field"),
                         outsideLabelText: "Description",
                         controller: widget.descriptionController,
                         hintText: "Add Description",
@@ -109,6 +112,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       ),
                       const Gap(16),
                       AnotherTextFormField(
+                        key: const Key("add_task_form_start_date_field"),
                         outsideLabelText: "Start Date",
                         controller: widget.startDateController,
                         hintText: DateTime.now().toIso8601String(),
@@ -123,6 +127,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
                       ),
                       const Gap(16),
                       AnotherTextFormField(
+                        key: const Key("add_task_form_end_date_field"),
                         outsideLabelText: "End Date",
                         controller: widget.endDateController,
                         hintText: DateTime.now().toIso8601String(),
