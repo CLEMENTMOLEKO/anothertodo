@@ -54,6 +54,7 @@ class _AddTaskFormState extends State<AddTaskForm> {
         child: SafeArea(
           top: false,
           child: CupertinoDatePicker(
+            key: const Key("add_task_form_date_picker"),
             initialDateTime: DateTime.now(),
             use24hFormat: true,
             onDateTimeChanged: onDateTimeChanged,
