@@ -42,6 +42,7 @@ class CupertinoHomeWidget extends StatelessWidget {
                       radius: const Radius.circular(8),
                       strokeCap: StrokeCap.round,
                       child: Container(
+                        key: const Key("add-task-container-button"),
                         padding: const EdgeInsets.symmetric(vertical: 48 * 1.5),
                         decoration: BoxDecoration(
                           color: Theme.of(context)
