@@ -9,17 +9,18 @@ import 'package:uuid/uuid.dart';
 import 'widgets/add_task_form.dart';
 
 class AddTaskScreen extends StatefulWidget {
-  const AddTaskScreen({super.key});
+  final Task? task;
+  const AddTaskScreen({super.key, this.task});
 
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  TextEditingController startDateController = TextEditingController();
-  TextEditingController endDateController = TextEditingController();
+  late TextEditingController titleController;
+  late TextEditingController descriptionController;
+  late TextEditingController startDateController;
+  late TextEditingController endDateController;
   Priority taskPriority = Priority.low;
 
   @override
@@ -29,6 +30,19 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     startDateController.dispose();
     endDateController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    final dateTimeNowString = DateTime.now().toIso8601String();
+    super.initState();
+    titleController = TextEditingController(text: widget.task?.title ?? "");
+    descriptionController =
+        TextEditingController(text: widget.task?.description ?? "");
+    startDateController = TextEditingController(
+        text: widget.task?.startDate.toIso8601String() ?? dateTimeNowString);
+    endDateController = TextEditingController(
+        text: widget.task?.endDate.toIso8601String() ?? dateTimeNowString);
   }
 
   @override
@@ -61,28 +75,52 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       bottomNavigationBar: BottomAppBar(
         child: CupertinoButton.filled(
             key: const Key("add_task_screen_bottom_app_bar_button"),
-            child: const Text("Save Task"),
+            child: Text(widget.task == null ? "Add Task" : "Update Task"),
             onPressed: () {
-              context.read<TaskBloc>().add(
-                    TaskAdded(
-                      task: Task(
-                        id: const Uuid().toString(),
-                        title: titleController.text,
-                        description: descriptionController.text,
-                        startDate: DateTime.parse(
-                            startDateController.text.isEmpty
-                                ? DateTime.now().toIso8601String()
-                                : startDateController.text),
-                        endDate: DateTime.parse(endDateController.text.isEmpty
-                            ? DateTime.now().toIso8601String()
-                            : endDateController.text),
-                        priority: taskPriority,
-                      ),
-                    ),
-                  );
+              widget.task == null ? _addTask() : _updateTask();
               Navigator.of(context).pop();
             }),
       ),
     );
+  }
+
+  void _addTask() {
+    context.read<TaskBloc>().add(
+          TaskAdded(
+            task: Task(
+              id: const Uuid().toString(),
+              title: titleController.text,
+              description: descriptionController.text,
+              startDate: DateTime.parse(startDateController.text.isEmpty
+                  ? DateTime.now().toIso8601String()
+                  : startDateController.text),
+              endDate: DateTime.parse(endDateController.text.isEmpty
+                  ? DateTime.now().toIso8601String()
+                  : endDateController.text),
+              priority: taskPriority,
+            ),
+          ),
+        );
+  }
+
+  void _updateTask() {
+    context.read<TaskBloc>().add(
+          TaskUpdated(
+            task: Task(
+              id: widget.task!.id,
+              title: titleController.text,
+              description: descriptionController.text,
+              startDate: DateTime.parse(startDateController.text.isEmpty
+                  ? DateTime.now().toIso8601String()
+                  : startDateController.text),
+              endDate: DateTime.parse(
+                endDateController.text.isEmpty
+                    ? DateTime.now().toIso8601String()
+                    : endDateController.text,
+              ),
+              priority: taskPriority,
+            ),
+          ),
+        );
   }
 }

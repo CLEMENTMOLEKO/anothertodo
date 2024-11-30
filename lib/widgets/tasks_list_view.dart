@@ -3,6 +3,8 @@ import 'package:anothertodo/widgets/task_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../screens/add_task_screen/add_task_screen.dart';
+
 enum EnumTaskStatus { complete, incomplete }
 
 class TasksListWidget extends StatelessWidget {
@@ -69,7 +71,11 @@ class TasksListWidget extends StatelessWidget {
                   ),
                 ],
                 builder: (context, animation) {
-                  return TaskWidget(task: task);
+                  return GestureDetector(
+                      onTap: () => Navigator.of(context).push(
+                          CupertinoPageRoute(
+                              builder: (context) => AddTaskScreen(task: task))),
+                      child: TaskWidget(task: task));
                 });
           },
         );

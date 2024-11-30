@@ -15,11 +15,13 @@ void main() async {
         ? HydratedStorage.webStorageDirectory
         : await getApplicationDocumentsDirectory(),
   );
+
   Future<void> pumpAnotherTodo(WidgetTester tester) async {
     await tester.pumpWidget(const AnotherTodo());
   }
 
-  Future<void> pickDate(WidgetTester tester, Finder dateField) async {
+  Future<void> pickDate(WidgetTester tester, Finder dateField,
+      {double scrollOffset = -100}) async {
     await tester.tap(dateField);
     await tester.pumpAndSettle();
 
@@ -28,7 +30,7 @@ void main() async {
     expect(datePicker, findsOneWidget);
 
     // Simulate scrolling the date picker
-    await tester.drag(datePicker, const Offset(0, -100));
+    await tester.drag(datePicker, Offset(0, scrollOffset));
     await tester.pumpAndSettle();
 
     // Tap outside to close picker
@@ -36,8 +38,7 @@ void main() async {
     await tester.pumpAndSettle();
   }
 
-  testWidgets("Should add todo and navigate back to home with a todo",
-      (tester) async {
+  Future<void> setupTodo(WidgetTester tester) async {
     //Arrange
     await pumpAnotherTodo(tester);
     await tester.pumpAndSettle();
@@ -59,6 +60,12 @@ void main() async {
     await tester
         .tap(find.byKey(const Key("add_task_screen_bottom_app_bar_button")));
     await tester.pumpAndSettle();
+  }
+
+  testWidgets("Should add todo and navigate back to home with a todo",
+      (tester) async {
+    //Arrange
+    await setupTodo(tester);
     //Assert
     expect(find.byType(HomeScreen), findsOneWidget);
     expect(find.text("Test Task"), findsOneWidget);
@@ -67,26 +74,7 @@ void main() async {
 
   testWidgets("Should delete a todo", (tester) async {
     //Arrange
-    await pumpAnotherTodo(tester);
-    await tester.pumpAndSettle();
-    //Act
-    await tester.tap(find.byKey(const Key("add-task-container-button")));
-    await tester.pumpAndSettle();
-    expect(find.byType(AddTaskScreen), findsOneWidget);
-    await pickDate(
-        tester, find.byKey(const Key("add_task_form_start_date_field")));
-    await tester.pumpAndSettle();
-    await pickDate(
-        tester, find.byKey(const Key("add_task_form_end_date_field")));
-    await tester.pumpAndSettle();
-    await tester.enterText(
-        find.byKey(const Key("add_task_form_title_field")), "Test Task");
-    await tester.enterText(
-        find.byKey(const Key("add_task_form_description_field")),
-        "Test Description");
-    await tester
-        .tap(find.byKey(const Key("add_task_screen_bottom_app_bar_button")));
-    await tester.pumpAndSettle();
+    await setupTodo(tester);
     expect(find.text("Test Task"), findsOneWidget);
 
     // Long press to show context menu
@@ -101,5 +89,27 @@ void main() async {
     await tester.pumpAndSettle();
     //Assert
     expect(find.text("Test Task"), findsNothing);
+  });
+
+  testWidgets("Should edit a todo successfully", (tester) async {
+    //Arrange
+    await setupTodo(tester);
+    //Act
+    await tester.tap(find.byType(TaskWidget));
+    await tester.pumpAndSettle();
+    expect(find.byType(AddTaskScreen), findsOneWidget);
+    await tester.enterText(
+        find.byKey(const Key("add_task_form_title_field")), "Edited Task");
+    await tester.enterText(
+        find.byKey(const Key("add_task_form_description_field")),
+        "Edited Description");
+    await tester
+        .tap(find.byKey(const Key("add_task_screen_bottom_app_bar_button")));
+    await tester.pumpAndSettle();
+    //Assert
+    expect(find.text("Edited Task"), findsOneWidget);
+    expect(find.text("Edited Description"), findsOneWidget);
+    expect(find.text("Test Task"), findsNothing);
+    expect(find.text("Test Description"), findsNothing);
   });
 }

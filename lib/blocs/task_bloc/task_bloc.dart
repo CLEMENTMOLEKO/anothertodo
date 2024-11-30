@@ -25,6 +25,12 @@ class TaskBloc extends HydratedBloc<TaskEvent, TaskState> {
   void onAddTask(TaskAdded event, Emitter<TaskState> emit) {
     emit(state.copyWith(status: TaskStatus.loading));
 
+    if (state.tasks.any((task) => task.id == event.task.id)) {
+      emit(state.copyWith(
+          status: TaskStatus.failure, message: "Task already exists"));
+      return;
+    }
+
     List<Task> temp = <Task>[...state.tasks];
     Task tempTask = event.task.copyWith(id: const Uuid().v4().toString());
 
