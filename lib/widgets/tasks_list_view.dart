@@ -53,6 +53,7 @@ class TasksListWidget extends StatelessWidget {
                         ],
                       )),
                   CupertinoContextMenuAction(
+                    key: const Key("delete-task-context-menu-button"),
                     isDestructiveAction: true,
                     onPressed: () {
                       context.read<TaskBloc>().add(TaskRemoved(id: task.id));
